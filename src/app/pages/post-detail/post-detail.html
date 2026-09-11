@@ -1,0 +1,30 @@
+<div class="container mx-auto px-4 py-10 max-w-3xl">
+  @if (loading()) {
+    <div class="flex justify-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+    <div class="mt-4">
+      <a routerLink="/" class="btn btn-ghost">&larr; Back to posts</a>
+    </div>
+  } @else if (post(); as post) {
+    <article class="card bg-base-100 shadow-sm">
+      <div class="card-body">
+        <h1 class="text-4xl font-bold text-base-content">{{ post.title }}</h1>
+        <p class="text-base-content/60 text-sm mt-2">
+          By {{ post.author }} &middot;
+          {{ post.createdAt | date: 'mediumDate' }}
+          @if (post.updatedAt) {
+            &middot; updated {{ post.updatedAt | date: 'mediumDate' }}
+          }
+        </p>
+        <div class="divider"></div>
+        <p class="text-base-content/90 whitespace-pre-line leading-relaxed">{{ post.content }}</p>
+      </div>
+    </article>
+    <div class="mt-6">
+      <a routerLink="/" class="btn btn-ghost">&larr; Back to posts</a>
+    </div>
+  }
+</div>

@@ -1,0 +1,41 @@
+<div class="flex items-center justify-center py-16">
+  <div class="card bg-base-100 shadow-md w-full max-w-sm">
+    <div class="card-body">
+      <h1 class="card-title text-2xl justify-center text-base-content">Admin Login</h1>
+      <p class="text-center text-base-content/60 text-sm">Sign in to manage your blog posts.</p>
+
+      @if (error()) {
+        <div class="alert alert-error text-sm">{{ error() }}</div>
+      }
+
+      <form class="mt-2 flex flex-col gap-4" (ngSubmit)="submit()">
+        <label class="w-full">
+          <span class="label-text mb-1 block">Username</span>
+          <input
+            type="text"
+            name="username"
+            class="input input-bordered input-primary w-full"
+            [(ngModel)]="username"
+            autocomplete="username"
+          />
+        </label>
+        <label class="w-full">
+          <span class="label-text mb-1 block">Password</span>
+          <input
+            type="password"
+            name="password"
+            class="input input-bordered input-primary w-full"
+            [(ngModel)]="password"
+            autocomplete="current-password"
+          />
+        </label>
+        <button type="submit" class="btn btn-primary w-full" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          Login
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

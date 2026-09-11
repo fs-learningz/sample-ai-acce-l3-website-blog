@@ -1,0 +1,116 @@
+@if (loading()) {
+  <div class="flex justify-center py-20">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+} @else {
+  <div class="max-w-3xl">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-base-content">
+          {{ isEdit() ? 'Edit Post' : 'New Post' }}
+        </h1>
+        <p class="text-base-content/60 text-sm mt-1">
+          @if (isEdit()) {
+            Status:
+            @if (isPublished()) {
+              <span class="badge badge-success badge-outline badge-sm">Published</span>
+            } @else {
+              <span class="badge badge-warning badge-outline badge-sm">Draft</span>
+            }
+          } @else {
+            Write a new blog post.
+          }
+        </p>
+      </div>
+      <a routerLink="/admin/posts" class="btn btn-ghost btn-sm">&larr; Back to My Posts</a>
+    </div>
+
+    @if (error()) {
+      <div class="alert alert-error mb-4">{{ error() }}</div>
+    }
+    @if (notice()) {
+      <div class="alert alert-success mb-4">{{ notice() }}</div>
+    }
+
+    <form class="card bg-base-100 shadow-sm" (ngSubmit)="save()">
+      <div class="card-body gap-4">
+        <label class="form-control w-full">
+          <span class="label-text mb-1">Title</span>
+          <input
+            type="text"
+            name="title"
+            class="input input-bordered input-primary w-full"
+            placeholder="Post title"
+            [(ngModel)]="title"
+          />
+        </label>
+
+        @if (!isEdit()) {
+          <label class="form-control w-full">
+            <span class="label-text mb-1">Author</span>
+            <input
+              type="text"
+              name="author"
+              class="input input-bordered input-primary w-full"
+              placeholder="admin"
+              [(ngModel)]="author"
+            />
+          </label>
+        }
+
+        <label class="form-control w-full">
+          <span class="label-text mb-1">Content</span>
+          <textarea
+            name="content"
+            class="textarea textarea-bordered textarea-primary w-full min-h-64"
+            placeholder="Write your post content..."
+            [(ngModel)]="content"
+          ></textarea>
+        </label>
+
+        <div class="divider my-0"></div>
+
+        <div class="card-actions justify-between flex-wrap gap-2">
+          <div>
+            @if (isEdit()) {
+              <button
+                type="button"
+                class="btn btn-outline btn-error"
+                (click)="delete()"
+                [disabled]="saving()"
+              >Delete</button>
+            }
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            @if (isEdit() && isPublished()) {
+              <button
+                type="button"
+                class="btn btn-outline btn-warning"
+                (click)="unpublish()"
+                [disabled]="saving()"
+              >Unpublish</button>
+            }
+            @if (isEdit() && !isPublished()) {
+              <button
+                type="button"
+                class="btn btn-outline btn-success"
+                (click)="publish()"
+                [disabled]="saving()"
+              >Publish</button>
+            }
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="saving() || !canSave()"
+            >
+              @if (saving()) {
+                <span class="loading loading-spinner loading-sm"></span>
+              }
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+}

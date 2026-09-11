@@ -1,0 +1,42 @@
+<div class="container mx-auto px-4 py-10 max-w-3xl">
+  <header class="mb-8">
+    <h1 class="text-4xl font-bold text-base-content">Latest Posts</h1>
+    <p class="text-base-content/60 mt-2">Published stories from our community.</p>
+  </header>
+
+  @if (loading()) {
+    <div class="flex justify-center py-20">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-error">{{ error() }}</div>
+  } @else if (posts().length === 0) {
+    <div class="card bg-base-100 shadow-sm">
+      <div class="card-body items-center text-center text-base-content/60">
+        <p>No published posts yet.</p>
+      </div>
+    </div>
+  } @else {
+    <div class="grid gap-6">
+      @for (post of posts(); track post.id) {
+        <article class="card bg-base-100 shadow-sm hover:shadow-md transition-shadow">
+          <div class="card-body">
+            <h2 class="card-title text-2xl">
+              <a [routerLink]="['/posts', post.id]" class="link link-hover text-primary">
+                {{ post.title }}
+              </a>
+            </h2>
+            <p class="text-base-content/60 text-sm">
+              By {{ post.author }} &middot;
+              {{ post.createdAt | date: 'mediumDate' }}
+            </p>
+            <p class="text-base-content/80 line-clamp-3">{{ post.content }}</p>
+            <div class="card-actions justify-start mt-2">
+              <a [routerLink]="['/posts', post.id]" class="btn btn-primary btn-sm">Read more</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

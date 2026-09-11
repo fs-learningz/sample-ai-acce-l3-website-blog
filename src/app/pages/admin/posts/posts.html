@@ -1,0 +1,83 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-bold text-base-content">My Posts</h1>
+    <p class="text-base-content/60 text-sm mt-1">Manage the blog posts you created.</p>
+  </div>
+  <a routerLink="/admin/editor" class="btn btn-primary btn-sm">+ New Post</a>
+</div>
+
+@if (loading()) {
+  <div class="flex justify-center py-20">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+} @else if (error()) {
+  <div class="alert alert-error">{{ error() }}</div>
+} @else if (posts().length === 0) {
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body items-center text-center text-base-content/60">
+      <p>You haven't created any posts yet.</p>
+      <a routerLink="/admin/editor" class="btn btn-primary btn-sm mt-2">Create your first post</a>
+    </div>
+  </div>
+} @else {
+  <div class="card bg-base-100 shadow-sm overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Created</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (post of posts(); track post.id) {
+          <tr>
+            <td>
+              <span class="font-semibold">{{ post.title }}</span>
+              <span class="block text-base-content/60 text-xs">by {{ post.author }}</span>
+            </td>
+            <td>{{ post.createdAt | date: 'mediumDate' }}</td>
+            <td>
+              @if (post.isPublished) {
+                <span class="badge badge-success badge-outline">Published</span>
+              } @else {
+                <span class="badge badge-warning badge-outline">Draft</span>
+              }
+            </td>
+            <td class="text-right">
+              <div class="flex gap-2 justify-end">
+                <a
+                  [routerLink]="['/admin/editor', post.id]"
+                  class="btn btn-outline btn-secondary btn-xs"
+                  [class.btn-disabled]="busyId() === post.id"
+                >Edit</a>
+                @if (post.isPublished) {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-warning btn-xs"
+                    (click)="unpublish(post)"
+                    [disabled]="busyId() === post.id"
+                  >Unpublish</button>
+                } @else {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-success btn-xs"
+                    (click)="publish(post)"
+                    [disabled]="busyId() === post.id"
+                  >Publish</button>
+                }
+                <button
+                  type="button"
+                  class="btn btn-outline btn-error btn-xs"
+                  (click)="delete(post)"
+                  [disabled]="busyId() === post.id"
+                >Delete</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}
