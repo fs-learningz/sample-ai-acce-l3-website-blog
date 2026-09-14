@@ -1,0 +1,21 @@
+@if (!isAdminArea()) {
+  <header class="navbar bg-base-100 shadow-sm sticky top-0 z-20">
+    <div class="navbar-start">
+      <a routerLink="/" class="btn btn-ghost gap-1 text-lg font-bold">
+        <span class="text-primary">Emerald</span><span>Blog</span>
+      </a>
+    </div>
+    <div class="navbar-end gap-2">
+      @if (isAuthenticated()) {
+        <a routerLink="/admin" class="btn btn-outline btn-primary btn-sm">Dashboard</a>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="logout()">Logout</button>
+      } @else {
+        <a routerLink="/login" class="btn btn-primary btn-sm">Admin login</a>
+      }
+    </div>
+  </header>
+}
+
+<main>
+  <router-outlet />
+</main>

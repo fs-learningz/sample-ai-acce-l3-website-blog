@@ -1,0 +1,76 @@
+<div class="p-6">
+  <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-3xl font-bold text-base-content">{{ isEditMode() ? 'Edit post' : 'New post' }}</h1>
+    <a routerLink="/admin" class="btn btn-ghost btn-sm">&larr; My posts</a>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-24">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else {
+    @if (errorMessage()) {
+      <div class="alert alert-error mb-4">
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+    @if (successMessage()) {
+      <div class="alert alert-success mb-4">
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="card bg-base-100 shadow">
+      <div class="card-body gap-4">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Title</legend>
+          <input
+            type="text"
+            formControlName="title"
+            class="input w-full"
+            placeholder="A title for your post"
+          />
+          @if (form.controls.title.invalid && form.controls.title.touched) {
+            <p class="text-error text-sm">A title is required (max 200 characters).</p>
+          }
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Content</legend>
+          <textarea
+            formControlName="content"
+            class="textarea w-full"
+            rows="14"
+            placeholder="Write your post..."
+          ></textarea>
+          @if (form.controls.content.invalid && form.controls.content.touched) {
+            <p class="text-error text-sm">Content is required.</p>
+          }
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Status</legend>
+          <select formControlName="status" class="select w-full max-w-48">
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </fieldset>
+
+        <div class="card-actions flex flex-wrap items-center justify-between gap-2">
+          <div class="flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="saving()">Save</button>
+            <button type="button" class="btn btn-outline" (click)="saveAsDraft()" [disabled]="saving()">
+              Save as draft
+            </button>
+            <button type="button" class="btn btn-success" (click)="publish()" [disabled]="saving()">
+              Publish
+            </button>
+          </div>
+          @if (isEditMode()) {
+            <button type="button" class="btn btn-outline btn-error" (click)="delete()">Delete</button>
+          }
+        </div>
+      </div>
+    </form>
+  }
+</div>

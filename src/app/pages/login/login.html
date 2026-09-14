@@ -1,0 +1,51 @@
+<div class="flex min-h-[75vh] items-center justify-center px-4">
+  <div class="card w-full max-w-sm border border-base-300 bg-base-100 shadow">
+    <div class="card-body gap-3">
+      <h1 class="card-title justify-center text-2xl text-primary">Admin login</h1>
+      <p class="text-center text-sm text-base-content/60">
+        Sign in to manage the blog. Demo credentials: admin / admin.
+      </p>
+
+      @if (errorMessage()) {
+        <div class="alert alert-error">
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-3">
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Username</legend>
+          <input
+            type="text"
+            formControlName="username"
+            class="input w-full"
+            placeholder="admin"
+            autocomplete="username"
+          />
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Password</legend>
+          <input
+            type="password"
+            formControlName="password"
+            class="input w-full"
+            placeholder="••••••"
+            autocomplete="current-password"
+          />
+        </fieldset>
+
+        <button type="submit" class="btn btn-primary mt-2" [disabled]="submitting()">
+          @if (submitting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          Sign in
+        </button>
+      </form>
+
+      <div class="text-center">
+        <a routerLink="/" class="link link-hover text-sm text-base-content/60">&larr; Back to the blog</a>
+      </div>
+    </div>
+  </div>
+</div>

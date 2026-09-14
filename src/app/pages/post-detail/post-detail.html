@@ -1,0 +1,31 @@
+<div class="container mx-auto max-w-3xl px-4 py-10">
+  @if (loading()) {
+    <div class="flex justify-center py-24">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  } @else if (error()) {
+    <div class="alert alert-error">
+      <span>{{ error() }}</span>
+    </div>
+    <div class="mt-6">
+      <a routerLink="/" class="btn btn-ghost btn-sm">&larr; Back to all posts</a>
+    </div>
+  } @else if (post(); as article) {
+    <article class="card bg-base-100 shadow">
+      <div class="card-body">
+        <h1 class="text-4xl font-bold text-base-content">{{ article.title }}</h1>
+        <div class="flex flex-wrap gap-2 pb-4 text-sm text-base-content/60">
+          <span>By {{ article.author }}</span>
+          <span>·</span>
+          @if (article.publishedAtUtc) {
+            <span>Published {{ article.publishedAtUtc | date: 'mediumDate' }}</span>
+          }
+        </div>
+        <div class="whitespace-pre-line leading-relaxed text-base-content">{{ article.content }}</div>
+        <div class="card-actions justify-start mt-6">
+          <a routerLink="/" class="btn btn-ghost btn-sm">&larr; Back to all posts</a>
+        </div>
+      </div>
+    </article>
+  }
+</div>
