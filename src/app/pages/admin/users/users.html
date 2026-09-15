@@ -1,0 +1,125 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-bold text-base-content">Users</h1>
+    <p class="text-base-content/60 text-sm mt-1">Manage admin and author accounts.</p>
+  </div>
+  <button type="button" class="btn btn-primary btn-sm" (click)="openCreateForm()">+ New User</button>
+</div>
+
+@if (formOpen()) {
+  <div class="card bg-base-100 shadow-sm mb-6">
+    <div class="card-body gap-4">
+      <h2 class="card-title text-lg">{{ editingId() ? 'Edit User' : 'New User' }}</h2>
+
+      @if (formError()) {
+        <div class="alert alert-error text-sm">{{ formError() }}</div>
+      }
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        <label class="form-control w-full">
+          <span class="label-text mb-1">Username</span>
+          <input
+            type="text"
+            class="input input-bordered input-primary w-full"
+            [(ngModel)]="formUsername"
+            name="username"
+          />
+        </label>
+
+        <label class="form-control w-full">
+          <span class="label-text mb-1">Role</span>
+          <select class="select select-bordered select-primary w-full" [(ngModel)]="formRole" name="role">
+            <option value="Author">Author</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </label>
+
+        @if (!editingId()) {
+          <label class="form-control w-full sm:col-span-2">
+            <span class="label-text mb-1">Password</span>
+            <input
+              type="password"
+              class="input input-bordered input-primary w-full"
+              [(ngModel)]="formPassword"
+              name="password"
+              autocomplete="new-password"
+            />
+          </label>
+        }
+      </div>
+
+      <div class="card-actions justify-end">
+        <button type="button" class="btn btn-ghost" (click)="cancelForm()" [disabled]="saving()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="save()" [disabled]="saving()">
+          @if (saving()) {
+            <span class="loading loading-spinner loading-sm"></span>
+          }
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (loading()) {
+  <div class="flex justify-center py-20">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+} @else if (error()) {
+  <div class="alert alert-error">{{ error() }}</div>
+} @else {
+  <div class="card bg-base-100 shadow-sm overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Created</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td>
+              <span class="font-semibold">{{ user.username }}</span>
+              @if (isSelf(user)) {
+                <span class="badge badge-ghost badge-sm ml-1">You</span>
+              }
+            </td>
+            <td>
+              @if (user.role === 'Admin') {
+                <span class="badge badge-primary badge-outline">Admin</span>
+              } @else {
+                <span class="badge badge-outline">Author</span>
+              }
+            </td>
+            <td>{{ user.createdAt | date: 'mediumDate' }}</td>
+            <td class="text-right">
+              <div class="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  class="btn btn-outline btn-secondary btn-xs"
+                  (click)="openEditForm(user)"
+                  [disabled]="busyId() === user.id"
+                >Edit</button>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-xs"
+                  (click)="resetPassword(user)"
+                  [disabled]="busyId() === user.id"
+                >Reset Password</button>
+                <button
+                  type="button"
+                  class="btn btn-outline btn-error btn-xs"
+                  (click)="delete(user)"
+                  [disabled]="busyId() === user.id || isSelf(user)"
+                >Delete</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

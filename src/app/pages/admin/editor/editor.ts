@@ -15,7 +15,6 @@ export class Editor implements OnInit {
 
   protected readonly title = signal('');
   protected readonly content = signal('');
-  protected readonly author = signal('');
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -49,7 +48,6 @@ export class Editor implements OnInit {
           this.original.set(post);
           this.title.set(post.title);
           this.content.set(post.content);
-          this.author.set(post.author);
         }
         this.loading.set(false);
       },
@@ -85,7 +83,7 @@ export class Editor implements OnInit {
         .subscribe({ next: onSuccess, error: () => this.fail('Failed to save post.') });
     } else {
       this.postsService
-        .createPost({ title: this.title(), content: this.content(), author: this.author() || 'admin' })
+        .createPost({ title: this.title(), content: this.content() })
         .subscribe({ next: onSuccess, error: () => this.fail('Failed to create post.') });
     }
   }

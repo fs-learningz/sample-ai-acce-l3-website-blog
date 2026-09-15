@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './guards/admin.guard';
+import { adminOnlyGuard, authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [adminGuard],
+    canActivate: [authGuard],
     loadComponent: () => import('./pages/admin/admin').then((m) => m.Admin),
     children: [
       {
@@ -41,6 +41,12 @@ export const routes: Routes = [
         path: 'editor/:id',
         loadComponent: () => import('./pages/admin/editor/editor').then((m) => m.Editor),
         title: 'Edit Post · Admin',
+      },
+      {
+        path: 'users',
+        canActivate: [adminOnlyGuard],
+        loadComponent: () => import('./pages/admin/users/users').then((m) => m.AdminUsers),
+        title: 'Users · Admin',
       },
     ],
   },

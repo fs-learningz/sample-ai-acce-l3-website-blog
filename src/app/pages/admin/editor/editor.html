@@ -45,19 +45,6 @@
           />
         </label>
 
-        @if (!isEdit()) {
-          <label class="form-control w-full">
-            <span class="label-text mb-1">Author</span>
-            <input
-              type="text"
-              name="author"
-              class="input input-bordered input-primary w-full"
-              placeholder="admin"
-              [(ngModel)]="author"
-            />
-          </label>
-        }
-
         <label class="form-control w-full">
           <span class="label-text mb-1">Content</span>
           <textarea

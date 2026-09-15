@@ -20,7 +20,7 @@ export class PostsService {
     return this.http.get<Post[]>(`${this.apiUrl}/admin/posts`);
   }
 
-  createPost(post: { title: string; content: string; author: string }): Observable<Post> {
+  createPost(post: { title: string; content: string }): Observable<Post> {
     return this.http.post<Post>(`${this.apiUrl}/admin/posts`, post);
   }
 

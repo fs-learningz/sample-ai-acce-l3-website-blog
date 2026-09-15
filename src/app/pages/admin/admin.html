@@ -20,7 +20,14 @@
     <aside class="bg-neutral text-neutral-content w-64 min-h-full p-4 flex flex-col">
       <div class="mb-6 px-2">
         <h2 class="text-lg font-bold">Admin Dashboard</h2>
-        <p class="text-neutral-content/60 text-sm">Signed in as admin</p>
+        <p class="text-neutral-content/60 text-sm">
+          Signed in as {{ authService.currentUser()?.username }}
+          @if (authService.isAdmin()) {
+            <span class="badge badge-primary badge-outline badge-sm ml-1">Admin</span>
+          } @else {
+            <span class="badge badge-ghost badge-sm ml-1">Author</span>
+          }
+        </p>
       </div>
 
       <ul class="menu w-full gap-1">
@@ -40,6 +47,16 @@
             Editor
           </a>
         </li>
+        @if (authService.isAdmin()) {
+          <li>
+            <a routerLink="/admin/users" routerLinkActive="active">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4zm6 0a4 4 0 10-4-4" />
+              </svg>
+              Users
+            </a>
+          </li>
+        }
       </ul>
 
       <div class="mt-auto">
