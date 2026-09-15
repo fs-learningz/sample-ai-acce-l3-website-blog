@@ -12,3 +12,14 @@ export const adminGuard: CanActivateFn = () => {
 
   return router.createUrlTree(['/login']);
 };
+
+export const adminRoleGuard: CanActivateFn = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isLoggedIn() && authService.isAdmin()) {
+    return true;
+  }
+
+  return router.createUrlTree(['/admin']);
+};

@@ -1,0 +1,163 @@
+<div class="mb-6">
+  <h1 class="text-3xl font-bold text-base-content">Users</h1>
+  <p class="text-base-content/60 text-sm mt-1">Manage author and admin accounts.</p>
+</div>
+
+<div class="card bg-base-100 shadow-sm mb-6">
+  <div class="card-body">
+    <h2 class="card-title text-base">Add User</h2>
+    @if (createError()) {
+      <div class="alert alert-error">{{ createError() }}</div>
+    }
+    <form class="grid grid-cols-1 md:grid-cols-5 gap-3 items-end" (ngSubmit)="createUser()">
+      <label class="form-control w-full">
+        <span class="label-text mb-1">Username</span>
+        <input
+          type="text"
+          class="input input-bordered input-primary w-full"
+          [(ngModel)]="newUsername"
+          name="newUsername"
+        />
+      </label>
+      <label class="form-control w-full">
+        <span class="label-text mb-1">Email</span>
+        <input
+          type="email"
+          class="input input-bordered input-primary w-full"
+          [(ngModel)]="newEmail"
+          name="newEmail"
+        />
+      </label>
+      <label class="form-control w-full">
+        <span class="label-text mb-1">Password</span>
+        <input
+          type="password"
+          class="input input-bordered input-primary w-full"
+          [(ngModel)]="newPassword"
+          name="newPassword"
+        />
+      </label>
+      <label class="form-control w-full">
+        <span class="label-text mb-1">Role</span>
+        <select class="select select-bordered select-primary w-full" [(ngModel)]="newRole" name="newRole">
+          @for (role of roles(); track role.id) {
+            <option [value]="role.name">{{ role.name }}</option>
+          }
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary" [disabled]="creating()">
+        @if (creating()) {
+          <span class="loading loading-spinner loading-sm"></span>
+        }
+        Add User
+      </button>
+    </form>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="flex justify-center py-20">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+} @else if (error()) {
+  <div class="alert alert-error">{{ error() }}</div>
+} @else if (users().length === 0) {
+  <div class="card bg-base-100 shadow-sm">
+    <div class="card-body items-center text-center text-base-content/60">
+      <p>No users yet. Add one above.</p>
+    </div>
+  </div>
+} @else {
+  <div class="card bg-base-100 shadow-sm overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user.id) {
+          <tr>
+            <td class="font-semibold">{{ user.username }}</td>
+            <td>
+              @if (editingId() === user.id) {
+                <input
+                  type="email"
+                  class="input input-bordered input-sm input-primary w-full max-w-xs"
+                  [(ngModel)]="editEmail"
+                  name="editEmail-{{ user.id }}"
+                />
+              } @else {
+                {{ user.email }}
+              }
+            </td>
+            <td>
+              <select
+                class="select select-bordered select-sm"
+                [ngModel]="user.role"
+                (ngModelChange)="changeRole(user, $event)"
+                [disabled]="busyId() === user.id"
+              >
+                @for (role of roles(); track role.id) {
+                  <option [value]="role.name">{{ role.name }}</option>
+                }
+              </select>
+            </td>
+            <td>
+              @if (user.isActive) {
+                <span class="badge badge-success badge-outline">Active</span>
+              } @else {
+                <span class="badge badge-warning badge-outline">Inactive</span>
+              }
+            </td>
+            <td class="text-right">
+              <div class="flex gap-2 justify-end flex-wrap">
+                @if (editingId() === user.id) {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-primary btn-xs"
+                    (click)="saveEdit(user)"
+                    [disabled]="busyId() === user.id"
+                  >Save</button>
+                  <button type="button" class="btn btn-ghost btn-xs" (click)="cancelEdit()">Cancel</button>
+                } @else {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-secondary btn-xs"
+                    (click)="startEdit(user)"
+                    [disabled]="busyId() === user.id"
+                  >Edit</button>
+                }
+                @if (user.isActive) {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-warning btn-xs"
+                    (click)="toggleActive(user)"
+                    [disabled]="busyId() === user.id"
+                  >Deactivate</button>
+                } @else {
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-success btn-xs"
+                    (click)="toggleActive(user)"
+                    [disabled]="busyId() === user.id"
+                  >Activate</button>
+                }
+                <button
+                  type="button"
+                  class="btn btn-outline btn-xs"
+                  (click)="resetPassword(user)"
+                  [disabled]="busyId() === user.id"
+                >Reset Password</button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

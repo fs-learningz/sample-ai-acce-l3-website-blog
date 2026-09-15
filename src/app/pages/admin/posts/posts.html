@@ -71,7 +71,8 @@
                   type="button"
                   class="btn btn-outline btn-error btn-xs"
                   (click)="delete(post)"
-                  [disabled]="busyId() === post.id"
+                  [disabled]="busyId() === post.id || post.isPublished"
+                  [title]="post.isPublished ? 'Unpublish this post before deleting it.' : ''"
                 >Delete</button>
               </div>
             </td>

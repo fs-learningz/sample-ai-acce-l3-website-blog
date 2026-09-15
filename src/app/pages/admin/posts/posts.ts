@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { PostsService } from '../../../services/posts.service';
 import { Post } from '../../../models/post';
@@ -51,6 +52,11 @@ export class AdminPosts implements OnInit {
   }
 
   delete(post: Post): void {
+    if (post.isPublished) {
+      alert('Unpublish this post before deleting it.');
+      return;
+    }
+
     if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) {
       return;
     }
@@ -58,7 +64,10 @@ export class AdminPosts implements OnInit {
     this.busyId.set(post.id);
     this.postsService.deletePost(post.id).subscribe({
       next: () => this.load(),
-      error: () => this.busyId.set(null),
+      error: (err: HttpErrorResponse) => {
+        this.busyId.set(null);
+        alert(err.error?.message ?? 'Failed to delete post.');
+      },
     });
   }
 }

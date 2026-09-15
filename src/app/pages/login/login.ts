@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -28,8 +29,8 @@ export class Login {
     this.submitting.set(true);
     this.authService.login(this.username(), this.password()).subscribe({
       next: () => this.router.navigate(['/admin']),
-      error: () => {
-        this.error.set('Invalid username or password.');
+      error: (err: HttpErrorResponse) => {
+        this.error.set(err.error?.message ?? 'Invalid username or password.');
         this.submitting.set(false);
       },
     });

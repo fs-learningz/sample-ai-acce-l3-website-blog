@@ -6,7 +6,7 @@ import { Post } from '../models/post';
 @Injectable({ providedIn: 'root' })
 export class PostsService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:10010/api';
+  private readonly apiUrl = 'http://localhost:10010/api/v1';
 
   getPublishedPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.apiUrl}/posts`);
@@ -20,7 +20,7 @@ export class PostsService {
     return this.http.get<Post[]>(`${this.apiUrl}/admin/posts`);
   }
 
-  createPost(post: { title: string; content: string; author: string }): Observable<Post> {
+  createPost(post: { title: string; content: string }): Observable<Post> {
     return this.http.post<Post>(`${this.apiUrl}/admin/posts`, post);
   }
 
